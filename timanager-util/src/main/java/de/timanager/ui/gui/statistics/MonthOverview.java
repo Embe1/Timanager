@@ -79,7 +79,7 @@ public final class MonthOverview extends BaseTableView {
                     LocalTime timeCell = LocalTime.now();
 
                     if (valueTableCell instanceof String)
-                        timeCell = isNullTime((String) valueTableCell) ? LocalTime.parse((String) valueTableCell): LocalTime.of(0,0,0);
+                        timeCell = !isNullTime((String) valueTableCell) ? LocalTime.parse((String) valueTableCell): LocalTime.of(0,0,0);
 
                     LocalDateTime dateTimeCell = LocalDateTime.of(dateCell, timeCell);
 
