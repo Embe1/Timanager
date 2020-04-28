@@ -125,9 +125,11 @@ public final class MonthOverview extends BaseTableView {
         if ((isNullTime(dateTime.toLocalTime().toString()) && timeMap.get(key) != null)) {
             removedValue = true;
             timeMap.remove(key, timeMap.get(key));
+            log.info(String.format("%s key with value %s removed!", key, dateTime));
         } else {
             changedValue = true;
             timeMap.put(key, dateTime);
+            log.info(String.format("%s value changed!", timeMap.get(key)));
         }
     }
 
