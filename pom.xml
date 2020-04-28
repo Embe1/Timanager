@@ -7,7 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>TiManager</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <modules>
         <module>timanager-util</module>
     </modules>

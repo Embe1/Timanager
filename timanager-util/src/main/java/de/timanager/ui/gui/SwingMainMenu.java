@@ -79,39 +79,21 @@ public final class SwingMainMenu extends GuiFrame {
     }
 
     private void initButtons() {
-        System.out.println(customFileHandler.existWorkTimeStartForToday() + " " +
-                customFileHandler.existLunchTimeStartForToday() + " " +
-                customFileHandler.existLunchTimeEndForToday() + " " +
-                customFileHandler.existWorkTimeEndForToday());
-
-        System.out.println(customFileHandler.getLastStartWorkTime());
-        System.out.println(customFileHandler.getLastStartLunchTime());
-        System.out.println(customFileHandler.getLastEndLunchTime());
-        System.out.println(customFileHandler.getLastEndWorkTime());
-
         enableStartBtn();
         enableEndBtn();
         enableLunchBtn();
     }
 
     private void enableStartBtn() {
-        startBtn.setEnabled(customFileHandler.existWorkTimeStartForToday() &&
-                customFileHandler.existLunchTimeStartForToday() &&
-                customFileHandler.existLunchTimeEndForToday() &&
-                customFileHandler.existWorkTimeEndForToday());
+        startBtn.setEnabled(!customFileHandler.existWorkTimeStartForToday());
     }
 
     private void enableEndBtn() {
-        endBtn.setEnabled(customFileHandler.existWorkTimeStartForToday() &&
-                customFileHandler.existLunchTimeStartForToday() &&
-                customFileHandler.existLunchTimeEndForToday() &&
-                !customFileHandler.existWorkTimeEndForToday());
+        endBtn.setEnabled(!customFileHandler.existWorkTimeEndForToday());
     }
 
     private void enableLunchBtn() {
-        lunchTimeBtn.setEnabled(!customFileHandler.existWorkTimeStartForToday() &&
-                !(customFileHandler.existLunchTimeStartForToday() && customFileHandler.existLunchTimeEndForToday()) &&
-                !customFileHandler.existWorkTimeEndForToday());
+        lunchTimeBtn.setEnabled(!(customFileHandler.existLunchTimeStartForToday() && customFileHandler.existLunchTimeEndForToday()));
     }
 
     private JLabel startClock() {
