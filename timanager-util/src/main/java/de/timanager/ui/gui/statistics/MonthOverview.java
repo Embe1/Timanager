@@ -35,6 +35,8 @@ public final class MonthOverview extends BaseTableView {
     private final GridBagConstraints c = GuiFrame.setGridBagConstraints();
 
     private DefaultTableModel tableModel = new DefaultTableModel(null, columnNames);
+    private boolean changedValue = false;
+    private boolean removedValue = false;
 
     public MonthOverview(Component componentOrientation) {
         super(componentOrientation, "Monatsübersicht - " + DateTimeFormatter.ofPattern("MMMM", Locale.GERMANY).format(LocalDateTime.now()), JFrame.DISPOSE_ON_CLOSE);
@@ -58,8 +60,6 @@ public final class MonthOverview extends BaseTableView {
      * Speichert die Werte aus der Tabelle, wenn ein Wert geändert wurde.
      */
     private void saveTableData() {
-        boolean changedValue = false;
-        boolean removedValue = false;
 
         for (int row = 0; row < tableModel.getRowCount(); row++) {
             LocalDate dateCell = LocalDate.now();
@@ -79,7 +79,7 @@ public final class MonthOverview extends BaseTableView {
                     LocalTime timeCell = LocalTime.now();
 
                     if (valueTableCell instanceof String)
-                        timeCell = !isNullTime((String) valueTableCell) ? LocalTime.parse((String) valueTableCell): LocalTime.of(0,0,0);
+                        timeCell = !isNullTime((String) valueTableCell) ? LocalTime.parse((String) valueTableCell) : LocalTime.of(0, 0, 0);
 
                     LocalDateTime dateTimeCell = LocalDateTime.of(dateCell, timeCell);
 
@@ -89,36 +89,16 @@ public final class MonthOverview extends BaseTableView {
                     workEndString = TimeKey.WORKTIME_END.generateKey(dateTimeCell);
 
                     if (column == 1 && checkCellChange(dateTimeCell, TimeKey.WORKTIME_START)) {
-                        if (isNullTime(dateTimeCell.toLocalTime().toString()))
-                            timeMap.remove(workStartString, dateTimeCell);
-                        else {
-                            changedValue = true;
-                            timeMap.put(workStartString, dateTimeCell);
-                        }
+                        removeOrUpdate(dateTimeCell, workStartString);
 
                     } else if (column == 2 && checkCellChange(dateTimeCell, TimeKey.LUNCH_START)) {
-                        if (isNullTime(dateTimeCell.toLocalTime().toString()))
-                            timeMap.remove(lunchStartString, dateTimeCell);
-                        else {
-                            changedValue = true;
-                            timeMap.put(lunchStartString, dateTimeCell);
-                        }
+                        removeOrUpdate(dateTimeCell, lunchStartString);
 
                     } else if (column == 3 && checkCellChange(dateTimeCell, TimeKey.LUNCH_END)) {
-                        if (isNullTime(dateTimeCell.toLocalTime().toString()))
-                            timeMap.remove(lunchEndString, dateTimeCell);
-                        else {
-                            changedValue = true;
-                            timeMap.put(lunchEndString, dateTimeCell);
-                        }
+                        removeOrUpdate(dateTimeCell, lunchEndString);
 
                     } else if (column == 4 && checkCellChange(dateTimeCell, TimeKey.WORKTIME_END)) {
-                        if (isNullTime(dateTimeCell.toLocalTime().toString()))
-                            timeMap.remove(workEndString, dateTimeCell);
-                        else {
-                            changedValue = true;
-                            timeMap.put(workEndString, dateTimeCell);
-                        }
+                        removeOrUpdate(dateTimeCell, workEndString);
 
                     } else if (column == 6 && valueTableCell.toString().equals(Boolean.toString(true))) {
                         removedValue = true;
@@ -139,6 +119,16 @@ public final class MonthOverview extends BaseTableView {
             showOptionDialog("Möchten Sie die markierten Einträge wirklich löschen?");
         else
             JOptionPane.showMessageDialog(this, "Es wurden keine Werte geändert, und somit wurde auch nichts gespeichert!");
+    }
+
+    private void removeOrUpdate(LocalDateTime dateTime, String key) {
+        if ((isNullTime(dateTime.toLocalTime().toString()) && timeMap.get(key) != null)) {
+            removedValue = true;
+            timeMap.remove(key, timeMap.get(key));
+        } else {
+            changedValue = true;
+            timeMap.put(key, dateTime);
+        }
     }
 
     private void showOptionDialog(String message) {
@@ -182,15 +172,20 @@ public final class MonthOverview extends BaseTableView {
     private boolean checkCellChange(LocalDateTime dateTime, TimeKey timeKey) {
         LocalDateTime mapTime = timeMap.get(timeKey.generateKey(dateTime));
 
-        if (mapTime != null && (!dateTime.equals(mapTime) && !isNullTime(dateTime.toString()))) {
-            // Saved value exists and values are different and not 0.
-            System.out.println("Test1");
+        if (mapTime != null && (!dateTime.equals(mapTime) && !isNullTime(dateTime.toLocalTime().toString()))) {
+            log.info("Saved value exists, values are different and not 0!");
             return true;
 
-        } else {
-            // Value not in saved values and not 0.
-            return mapTime == null && !isNullTime(dateTime.toLocalTime().toString());
+        } else if (mapTime == null && !isNullTime(dateTime.toLocalTime().toString())) {
+            log.info("Value not in saved values and not 0!");
+            return true;
+
+        } else if (isNullTime(dateTime.toLocalTime().toString()) && mapTime != null) {
+            log.info("Value is 0 and an value is existing -> delete value from map!");
+            return true;
         }
+        log.info("No cell change detected!");
+        return false;
     }
 
     private boolean isNullTime(String time) {
