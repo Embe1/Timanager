@@ -2,8 +2,6 @@ package de.timanager.ui.gui.popups;
 
 import de.timanager.files.CustomFileHandler;
 import de.timanager.files.TimeKey;
-import de.timanager.ui.gui.GuiFrame;
-import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -14,12 +12,11 @@ import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 public abstract class PopupSaver extends JDialog {
+    final JButton ok = new JButton("Bestätigen");
+    final JButton cancel = new JButton("Abbrechen");
     @Setter
     private ActionListener okListener;
     private int gridYCounter = 0;
-
-    final JButton ok = new JButton("Bestätigen");
-    final JButton cancel = new JButton("Abbrechen");
 
     PopupSaver(String title) {
         setModal(true);
@@ -46,12 +43,12 @@ public abstract class PopupSaver extends JDialog {
         return gridYCounter++;
     }
 
-    void completeConstruction() {
+    void completeConstruction(Component orientation) {
         ok.addActionListener(okListener);
         cancel.addActionListener(e -> dispose());
 
         pack();
-        setLocationRelativeTo(this);
+        setLocationRelativeTo(orientation);
         setVisible(true);
     }
 

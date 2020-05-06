@@ -23,13 +23,14 @@ import java.time.temporal.ChronoUnit;
 
 @Slf4j
 public final class SwingMainMenu extends GuiFrame {
+    private static SwingMainMenu swingMainMenu;
+
     private final JButton lunchTimeBtn = (JButton) newButton("Mittagspause");
     private final JButton startBtn = (JButton) newButton("Starten");
     private final JButton endBtn = (JButton) newButton("Beenden");
 
     private JLabel clockLabel = new JLabel();
     private Timer timer;
-    private SwingMainMenu swingMainMenu = this;
     private GridBagConstraints c = GuiFrame.setGridBagConstraints();
     private CustomFileHandler customFileHandler = new CustomFileHandler();
 
@@ -40,7 +41,7 @@ public final class SwingMainMenu extends GuiFrame {
 
     public SwingMainMenu() {
         super(0, 0, JFrame.EXIT_ON_CLOSE, "Timanager");
-        setLocationRelativeTo(this);
+        swingMainMenu = this;
 
         addMainMenuBar();
         addContent();
@@ -53,6 +54,7 @@ public final class SwingMainMenu extends GuiFrame {
             addCurrentRecordingTimer();
 
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -112,7 +114,7 @@ public final class SwingMainMenu extends GuiFrame {
             LocalTime current = TimeUtil.getCurrentTimeWithoutNanos();
             long until = lunchEndTime.until(current, ChronoUnit.SECONDS) + startToLunchTime;
 
-            // TODO check for lunch time not calculating.
+            // TODO check for lunch time not included calculating.
             if (until < 0)
                 until = 0;
 
@@ -157,7 +159,7 @@ public final class SwingMainMenu extends GuiFrame {
         menu2Item1.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                new PopupSaveTimeForDate(customFileHandler, "Zeit für Datum hinzufügen");
+                new PopupSaveTimeForDate(customFileHandler, "Zeit für Datum hinzufügen", swingMainMenu);
             }
         });
 
@@ -199,7 +201,7 @@ public final class SwingMainMenu extends GuiFrame {
                         customFileHandler,
                         TimeKey.WORKTIME_START,
                         "Aufzeichnung starten",
-                        this);
+                        swingMainMenu);
 
                 if (aufzeichnungStarten.isOkBtnClicked()) {
                     remove(clockLabel);
@@ -224,12 +226,12 @@ public final class SwingMainMenu extends GuiFrame {
             customFileHandler = new CustomFileHandler();
 
             if (!customFileHandler.existWorkTimeEndForToday()) {
-                PopupSaveTime aufzeichnungBeenden = new PopupSaveTime(customFileHandler,
+                PopupSaveTime stopRecord = new PopupSaveTime(customFileHandler,
                         TimeKey.WORKTIME_END,
                         "Aufzeichnung beenden",
-                        this);
+                        swingMainMenu);
 
-                if (aufzeichnungBeenden.isOkBtnClicked()) {
+                if (stopRecord.isOkBtnClicked()) {
                     stopClock();
 //                    enableEndBtn();
                     updateFrame();

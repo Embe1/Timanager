@@ -2,6 +2,7 @@ package de.timanager.ui.gui.popups;
 
 import de.timanager.files.CustomFileHandler;
 import de.timanager.files.TimeKey;
+import de.timanager.ui.gui.SwingMainMenu;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
@@ -24,14 +25,14 @@ public final class PopupSaveTimeForDate extends PopupSaver {
 
     private final GridBagConstraints c = new GridBagConstraints();
 
-    public PopupSaveTimeForDate(CustomFileHandler customFileHandler, String title) {
+    public PopupSaveTimeForDate(CustomFileHandler customFileHandler, String title, SwingMainMenu orientation) {
         super(title);
 
         setActionListeners(customFileHandler, null);
         createContent();
 
         // Sets the listeners to the two buttons.
-        completeConstruction();
+        completeConstruction(orientation);
     }
 
     @Override

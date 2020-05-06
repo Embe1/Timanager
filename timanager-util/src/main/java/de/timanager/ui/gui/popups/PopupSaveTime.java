@@ -26,13 +26,12 @@ public final class PopupSaveTime extends PopupSaver {
 
     public PopupSaveTime(CustomFileHandler customFileHandler, TimeKey timeKey, String title, Component orientation) {
         super(title);
-        setLocationRelativeTo(orientation);
 
         setActionListeners(customFileHandler, timeKey);
         createContent();
 
         // Sets the listeners to the two buttons.
-        completeConstruction();
+        completeConstruction(orientation);
     }
 
     @Override
