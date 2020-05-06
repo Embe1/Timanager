@@ -23,10 +23,11 @@ import java.time.temporal.ChronoUnit;
 
 @Slf4j
 public final class SwingMainMenu extends GuiFrame {
-    private final JButton lunchTimeBtn = new JButton("Mittagspause");
+    private final JButton lunchTimeBtn = (JButton) newButton("Mittagspause");
     private final JButton startBtn = (JButton) newButton("Starten");
     private final JButton endBtn = (JButton) newButton("Beenden");
 
+    private JLabel clockLabel = new JLabel();
     private Timer timer;
     private SwingMainMenu swingMainMenu = this;
     private GridBagConstraints c = GuiFrame.setGridBagConstraints();
@@ -78,10 +79,13 @@ public final class SwingMainMenu extends GuiFrame {
         getContentPane().add(lunchTimeBtn, c);
     }
 
+    /**
+     * Initialize the quick-buttons
+     */
     private void initButtons() {
-        enableStartBtn();
-        enableEndBtn();
-        enableLunchBtn();
+//        enableStartBtn();
+//        enableEndBtn();
+//        enableLunchBtn();
     }
 
     private void enableStartBtn() {
@@ -97,8 +101,6 @@ public final class SwingMainMenu extends GuiFrame {
     }
 
     private JLabel startClock() {
-        JLabel clockLabel = new JLabel();
-
         workStartTime = customFileHandler.getLastStartWorkTime();
         lunchStartTime = customFileHandler.getLastStartLunchTime();
         lunchEndTime = customFileHandler.getLastEndLunchTime();
@@ -177,7 +179,7 @@ public final class SwingMainMenu extends GuiFrame {
     }
 
     private void addCurrentRecordingTimer() {
-        JLabel clockLabel = startClock();
+        clockLabel = startClock();
 
         c.gridx = 0;
         c.gridy = 2;
@@ -196,12 +198,14 @@ public final class SwingMainMenu extends GuiFrame {
                 PopupSaveTime aufzeichnungStarten = new PopupSaveTime(
                         customFileHandler,
                         TimeKey.WORKTIME_START,
-                        "Aufzeichnung starten");
+                        "Aufzeichnung starten",
+                        this);
 
                 if (aufzeichnungStarten.isOkBtnClicked()) {
+                    remove(clockLabel);
                     addCurrentRecordingTimer();
-                    enableStartBtn();
-                    enableLunchBtn();
+//                    enableStartBtn();
+//                    enableLunchBtn();
                     updateFrame();
                 }
 
@@ -222,11 +226,12 @@ public final class SwingMainMenu extends GuiFrame {
             if (!customFileHandler.existWorkTimeEndForToday()) {
                 PopupSaveTime aufzeichnungBeenden = new PopupSaveTime(customFileHandler,
                         TimeKey.WORKTIME_END,
-                        "Aufzeichnung beenden");
+                        "Aufzeichnung beenden",
+                        this);
 
                 if (aufzeichnungBeenden.isOkBtnClicked()) {
                     stopClock();
-                    enableEndBtn();
+//                    enableEndBtn();
                     updateFrame();
                 }
 
@@ -246,18 +251,11 @@ public final class SwingMainMenu extends GuiFrame {
                     LocalDate.now().getYear(),
                     LocalDate.now().getMonth(),
                     LocalDate.now().getDayOfMonth(),
-                    13,
-                    0,
+                    LocalTime.now().getHour(),
+                    LocalTime.now().getMinute(),
                     LocalTime.now().getSecond()
             );
-            LocalDateTime defaultLunchTimeEnd = LocalDateTime.of(
-                    LocalDate.now().getYear(),
-                    LocalDate.now().getMonth(),
-                    LocalDate.now().getDayOfMonth(),
-                    13,
-                    30,
-                    LocalTime.now().getSecond()
-            );
+            LocalDateTime defaultLunchTimeEnd = defaultLunchTimeStart.plusMinutes(30);
             customFileHandler.addTime(defaultLunchTimeStart, TimeKey.LUNCH_START);
             customFileHandler.addTime(defaultLunchTimeEnd, TimeKey.LUNCH_END);
 

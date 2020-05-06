@@ -24,8 +24,9 @@ public final class PopupSaveTime extends PopupSaver {
     @Getter
     private boolean okBtnClicked = false;
 
-    public PopupSaveTime(CustomFileHandler customFileHandler, TimeKey timeKey, String title) {
+    public PopupSaveTime(CustomFileHandler customFileHandler, TimeKey timeKey, String title, Component orientation) {
         super(title);
+        setLocationRelativeTo(orientation);
 
         setActionListeners(customFileHandler, timeKey);
         createContent();

@@ -17,6 +17,10 @@ public final class TimeMap<K extends String, V extends LocalDateTime> extends Ha
         super((HashMap<K, V>) readObject);
     }
 
+    public TimeMap() {
+        super(new HashMap<>());
+    }
+
 //    @Override
 //    public V get(Object key) {
 //        return super.get(key) != null ? super.get(key) : (V) LocalDateTime.now();

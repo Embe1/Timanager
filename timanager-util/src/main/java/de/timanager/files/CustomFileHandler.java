@@ -235,7 +235,7 @@ public final class CustomFileHandler {
             return new TimeMap<>(readObject);
         } catch (EOFException eof) {
             log.info("Empty file loaded.");
-            return new TimeMap<>(new Object());
+            return new TimeMap<>(new HashMap<>());
         }
     }
 

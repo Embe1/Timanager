@@ -175,18 +175,18 @@ public final class MonthOverview extends BaseTableView {
         LocalDateTime mapTime = timeMap.get(timeKey.generateKey(dateTime));
 
         if (mapTime != null && (!dateTime.equals(mapTime) && !isNullTime(dateTime.toLocalTime().toString()))) {
-            log.info("Saved value exists, values are different and not 0!");
+            log.debug("Saved value exists, values are different and not 0!");
             return true;
 
         } else if (mapTime == null && !isNullTime(dateTime.toLocalTime().toString())) {
-            log.info("Value not in saved values and not 0!");
+            log.debug("Value not in saved values and not 0!");
             return true;
 
         } else if (isNullTime(dateTime.toLocalTime().toString()) && mapTime != null) {
-            log.info("Value is 0 and an value is existing -> delete value from map!");
+            log.debug("Value is 0 and an value is existing -> delete value from map!");
             return true;
         }
-        log.info("No cell change detected!");
+        log.debug("No cell change detected!");
         return false;
     }
 

@@ -1,12 +1,9 @@
 package de.timanager.ui.gui;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-@Slf4j
 public abstract class GuiFrame extends JFrame {
     private static GridBagConstraints c = new GridBagConstraints();
 
@@ -53,11 +50,11 @@ public abstract class GuiFrame extends JFrame {
         setDefaultCloseOperation(closeOperation);
     }
 
-    public static final GridBagConstraints setGridBagConstraints() {
-        return setGridBagConstraints(0,0);
+    public static GridBagConstraints setGridBagConstraints() {
+        return setGridBagConstraints(0, 0);
     }
 
-    public static final GridBagConstraints setGridBagConstraints(int x, int y) {
+    public static GridBagConstraints setGridBagConstraints(int x, int y) {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = x;
         c.gridy = y;
