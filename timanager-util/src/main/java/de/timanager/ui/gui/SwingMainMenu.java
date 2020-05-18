@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,6 +48,7 @@ public final class SwingMainMenu extends GuiFrame {
         addContent();
         addButtonListener();
         initButtons();
+        setActionBeforeShutdown();
 
 //        if (customFileHandler.getLastStartWorkTime().equals(TimeUtil.getCurrentTimeWithoutNanos()))
 //            addCurrentRecordingTimer();
@@ -79,6 +81,10 @@ public final class SwingMainMenu extends GuiFrame {
         c.gridwidth = 2;
         c.insets = new Insets(10, 0, 0, 0);
         getContentPane().add(lunchTimeBtn, c);
+    }
+
+    private void setActionBeforeShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread(customFileHandler::writeBackup));
     }
 
     /**
