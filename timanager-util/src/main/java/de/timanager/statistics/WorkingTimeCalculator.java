@@ -1,28 +1,49 @@
 package de.timanager.statistics;
 
+import de.timanager.files.CustomFileHandler;
 import de.timanager.files.TimeKey;
 import de.timanager.files.TimeMap;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 /**
  * Does calculations for different time informations.
  */
 @Slf4j
 public final class WorkingTimeCalculator {
-    private final TimeMap<String, LocalDateTime> timeMap;
+    private TimeMap<String, LocalDateTime> timeMap;
     @Getter
-    private int workingtimedayminutes;
+    @Deprecated
+    private int workingTimeDayMinutes;
     @Getter
+    @Deprecated
     private String workingTimeDayHours;
+    @Getter
+    private String workingTimeMonthHours;
+
+    public WorkingTimeCalculator(TimeMap<String, LocalDateTime> timeMap) {
+        this.timeMap = timeMap;
+        workingTimeMonthHours = calculateHoursOfMonth();
+    }
 
     public WorkingTimeCalculator(TimeMap<String, LocalDateTime> timeMap, LocalDateTime dateTime) {
         this.timeMap = timeMap;
-        workingtimedayminutes = calculateWorkingTimeInMinutes(dateTime);
-        workingTimeDayHours = convertMinutesToHours(workingtimedayminutes);
+        workingTimeDayMinutes = calculateWorkingTimeInMinutes(dateTime);
+        workingTimeDayHours = convertMinutesToHours(workingTimeDayMinutes);
+    }
+
+    public String calculateHoursOfMonth() {
+        int minutes = 0;
+
+        for (Map.Entry<String, LocalDateTime> entry : timeMap.entrySet()) {
+            minutes += calculateWorkingTimeInMinutes(entry.getValue());
+        }
+        return convertMinutesToHours(minutes);
     }
 
     /**
@@ -63,7 +84,7 @@ public final class WorkingTimeCalculator {
      * Calculates the differences between two {@link LocalDateTime} objects.
      *
      * @param beginning the beginning time.
-     * @param ending the ending time.
+     * @param ending    the ending time.
      * @return an integer representing the minutes between the two times.
      */
     private int calculateMinutes(LocalDateTime beginning, LocalDateTime ending) {

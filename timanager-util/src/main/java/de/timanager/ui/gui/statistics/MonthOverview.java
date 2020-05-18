@@ -15,12 +15,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Slf4j
 public final class MonthOverview extends BaseTableView {
-    private final CustomFileHandler customFileHandler = new CustomFileHandler(LocalDate.now().getMonth());
+    private final Month month = LocalDate.now().getMonth();
+    private final CustomFileHandler customFileHandler = new CustomFileHandler(month);
     private final TimeMap<String, LocalDateTime> timeMap = customFileHandler.getTimeMap();
 
     private final Object[] columnNames = {
@@ -160,6 +162,9 @@ public final class MonthOverview extends BaseTableView {
         }
     }
 
+    /**
+     * Move to a super-class.
+     */
     private void resetTable() {
         getContentPane().removeAll();
 
@@ -197,8 +202,9 @@ public final class MonthOverview extends BaseTableView {
     @Override
     public void createTable() {
 
-        for (int j = 1; j < LocalDateTime.MAX.getDayOfMonth(); j++) {
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), j, 0, 0, 0);
+        // TODO muss an jeden Monat angepasst werden.
+        for (int j = 1; j < 31; j++) {
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.now().getYear(), month, j, 0, 0, 0);
 
             LocalDateTime startTime = timeMap.get(TimeKey.WORKTIME_START.generateKey(dateTime));
             LocalDateTime endTime = timeMap.get(TimeKey.WORKTIME_END.generateKey(dateTime));

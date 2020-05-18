@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public final class CustomFileHandler {
@@ -189,7 +190,7 @@ public final class CustomFileHandler {
      * Adds a {@link LocalDateTime}-object to the {@link #timeMap} and serializes it, if the storing is valid.
      *
      * @param localDateTime the value(time) to store.
-     * @param toAddKey the key, according the time to store.
+     * @param toAddKey      the key, according the time to store.
      * @return true, if the time is saved in the file, otherwise false.
      */
     public final boolean addTime(LocalDateTime localDateTime, TimeKey toAddKey) {
@@ -234,8 +235,37 @@ public final class CustomFileHandler {
             Object readObject = in.readObject();
             return new TimeMap<>(readObject);
         } catch (EOFException eof) {
-            log.info("Empty file loaded.");
+            log.info(String.format("Empty file found - %s", fileString));
             return new TimeMap<>(new HashMap<>());
+        }
+    }
+
+    public void writeBackup() {
+
+        for (int i = 1; i < LocalDate.MAX.getMonthValue() + 1; i++) {
+            try {
+                TimeMap<String, LocalDateTime> localtimeMap = deserializeTime(path + Month.of(i) + year + postfix);
+                saveToBackupFile(localtimeMap, path + "Backup/" + Month.of(i) + year);
+                log.info(String.format("%s stored successfully to backup-file!", Month.of(i)));
+
+            } catch (IOException | ClassNotFoundException e) {
+                log.warn(String.format("%s backup-file couldn't be stored.", Month.of(i)));
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveToBackupFile(TimeMap<String, LocalDateTime> map, String pathWithoutPostfix) throws IOException {
+        createFileWithMonthIfNotExist(pathWithoutPostfix + ".bck");
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathWithoutPostfix + ".bck"))) {
+
+            for (Map.Entry<String, LocalDateTime> entry : map.entrySet()) {
+                bufferedWriter.append(entry.getKey());
+                bufferedWriter.append(",");
+                bufferedWriter.append(entry.getValue().toString());
+                bufferedWriter.append(System.lineSeparator());
+            }
         }
     }
 
