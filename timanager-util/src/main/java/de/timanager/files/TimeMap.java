@@ -3,7 +3,10 @@ package de.timanager.files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Stores the elements of one month-data-file.
@@ -12,19 +15,20 @@ import java.util.HashMap;
  * @param <V> value of the time.
  */
 public final class TimeMap<K extends String, V extends LocalDateTime> extends HashMap<K, V> {
-    
+
     public TimeMap(Object readObject) {
         super((HashMap<K, V>) readObject);
     }
 
-    public TimeMap() {
-        super(new HashMap<>());
-    }
+    public final LocalDateTime getLocalDateTimeWithKey(TimeKey timeKey, Month month) {
+        LocalTime timeNow = LocalTime.now();
+        LocalDate dateNow = LocalDate.of(LocalDate.now().getYear(), month.getValue(), LocalDate.now().getDayOfMonth());
 
-//    @Override
-//    public V get(Object key) {
-//        return super.get(key) != null ? super.get(key) : (V) LocalDateTime.now();
-//    }
+        for (int i = 0; i < size(); i++) {
+            timeKey.generateKey(LocalDateTime.of(dateNow, timeNow));
+        }
+        return null;
+    }
 
     /**
      * Gets the values of the {@link TimeKey} and the depending partner given.
@@ -33,24 +37,12 @@ public final class TimeMap<K extends String, V extends LocalDateTime> extends Ha
      * @param number  the number of the key.
      * @return
      */
+    @Deprecated
     public Entry<K, V> getPair(TimeKey timeKey, int number) {
         TimeKey pairPartner = timeKey.getPairPartner();
         V value = get(timeKey.toString() + number);
-        V value2 = get(pairPartner.toString() + number);
+        V value2 = get(Objects.requireNonNull(pairPartner).toString() + number);
         return null;
-    }
-    
-    int getHighestKey(TimeKey timeKey) {
-        ArrayList<K> entries = new ArrayList<>(keySet());
-
-        for (K k : entries) {
-            String ksub = k.toString().substring(0, timeKey.toString().length());
-
-            if (ksub.equals(timeKey.toString())) {
-                return Integer.parseInt(k.toString().substring(ksub.length() + 1));
-            }
-        }
-        return 0;
     }
 
     /**

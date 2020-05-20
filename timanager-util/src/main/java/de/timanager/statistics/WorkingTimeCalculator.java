@@ -5,6 +5,7 @@ import de.timanager.files.TimeMap;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -23,6 +24,17 @@ public final class WorkingTimeCalculator {
         this.timeMap = timeMap;
         workingtimedayminutes = calculateWorkingTimeInMinutes(dateTime);
         workingTimeDayHours = convertMinutesToHours(workingtimedayminutes);
+    }
+
+    /**
+     * For only get the same date of different time-map-values.
+     *
+     * @param localDateTime
+     * @return the date of the localdatetime.
+     */
+    private LocalDate getDateTimeOfTimeMapValue(LocalDateTime localDateTime) {
+        timeMap.get(TimeKey.WORKTIME_START.generateKey(localDateTime));
+        return null;
     }
 
     /**
