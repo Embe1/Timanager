@@ -2,7 +2,6 @@ package de.timanager.ui.gui;
 
 import de.timanager.files.CustomFileHandler;
 import de.timanager.time.TimeKey;
-import de.timanager.ui.gui.popups.PopupConfirmation;
 import de.timanager.ui.gui.popups.PopupSaveTime;
 import de.timanager.ui.gui.popups.PopupSaveTimeForDate;
 import de.timanager.ui.gui.statistics.MonthOverview;
@@ -24,6 +23,8 @@ import java.time.temporal.ChronoUnit;
 
 @Slf4j
 public final class SwingMainMenu extends GuiFrame {
+    private static final JCheckBox backupEnableCheckBox = new JCheckBox("Backup aktiviert");
+
     private static SwingMainMenu swingMainMenu;
 
     private final JButton lunchTimeBtn = (JButton) newButton("Mittagspause");
@@ -47,7 +48,6 @@ public final class SwingMainMenu extends GuiFrame {
         addMainMenuBar();
         addContent();
         addButtonListener();
-        initButtons();
         setActionBeforeShutdown();
 
 //        if (customFileHandler.getLastStartWorkTime().equals(TimeUtil.getCurrentTimeWithoutNanos()))
@@ -81,31 +81,14 @@ public final class SwingMainMenu extends GuiFrame {
         c.gridwidth = 2;
         c.insets = new Insets(10, 0, 0, 0);
         getContentPane().add(lunchTimeBtn, c);
+
+        c.gridy = 2;
+        c.insets = new Insets(10, 0, 0, 0);
+        getContentPane().add(backupEnableCheckBox, c);
     }
 
     private void setActionBeforeShutdown() {
         Runtime.getRuntime().addShutdownHook(new Thread(customFileHandler::writeBackup));
-    }
-
-    /**
-     * Initialize the quick-buttons
-     */
-    private void initButtons() {
-//        enableStartBtn();
-//        enableEndBtn();
-//        enableLunchBtn();
-    }
-
-    private void enableStartBtn() {
-        startBtn.setEnabled(!customFileHandler.existWorkTimeStartForToday());
-    }
-
-    private void enableEndBtn() {
-        endBtn.setEnabled(!customFileHandler.existWorkTimeEndForToday());
-    }
-
-    private void enableLunchBtn() {
-        lunchTimeBtn.setEnabled(!(customFileHandler.existLunchTimeStartForToday() && customFileHandler.existLunchTimeEndForToday()));
     }
 
     private JLabel startClock() {
@@ -191,6 +174,9 @@ public final class SwingMainMenu extends GuiFrame {
         super.setJMenuBar(menuBar);
     }
 
+    public static boolean isBackupEnabled() {
+        return backupEnableCheckBox.isSelected();
+    }
     /**
      * Shows a confirmation-dialog, for the assurance of the loading of the backup.
      */

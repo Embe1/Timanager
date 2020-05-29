@@ -15,8 +15,9 @@ public class TimeUtils {
      */
     public static int getCountOfKey(TimeMap<String, LocalDateTime> timeMap, TimeKey timeKey, Month month) {
         int countedEntries = 0;
+        LocalDate localDate = LocalDate.of(LocalDate.now().getYear(), month, LocalDate.now().getDayOfMonth());
 
-        for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()); i++) {
+        for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(localDate); i++) {
             LocalDateTime value = timeMap.get(timeKey.generateKey(LocalDateTime.of(
                     LocalDate.now().getYear(),
                     month,
