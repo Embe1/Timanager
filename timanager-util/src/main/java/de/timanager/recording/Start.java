@@ -1,7 +1,7 @@
 package de.timanager.recording;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
+import de.timanager.time.TimeKey;
 
 import java.time.LocalDateTime;
 

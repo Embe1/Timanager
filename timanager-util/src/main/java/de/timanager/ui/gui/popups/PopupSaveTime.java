@@ -1,7 +1,7 @@
 package de.timanager.ui.gui.popups;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
+import de.timanager.time.TimeKey;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

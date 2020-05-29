@@ -1,8 +1,8 @@
 package de.timanager.ui.gui.statistics;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
-import de.timanager.files.TimeMap;
+import de.timanager.time.TimeKey;
+import de.timanager.time.TimeMap;
 import de.timanager.statistics.WorkingTimeCalculator;
 import de.timanager.ui.gui.GuiFrame;
 import lombok.extern.slf4j.Slf4j;

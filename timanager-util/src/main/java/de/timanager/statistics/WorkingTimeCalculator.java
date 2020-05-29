@@ -1,16 +1,17 @@
 package de.timanager.statistics;
 
-import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
-import de.timanager.files.TimeMap;
+import de.timanager.time.TimeKey;
+import de.timanager.time.TimeMap;
+import de.timanager.time.TimeUtils;
+import de.timanager.util.TimeUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 
 /**
  * Does calculations for different time informations.
@@ -27,9 +28,9 @@ public final class WorkingTimeCalculator {
     @Getter
     private String workingTimeMonthHours;
 
-    public WorkingTimeCalculator(TimeMap<String, LocalDateTime> timeMap) {
+    public WorkingTimeCalculator(TimeMap<String, LocalDateTime> timeMap, Month month) {
         this.timeMap = timeMap;
-        workingTimeMonthHours = calculateHoursOfMonth();
+        workingTimeMonthHours = calculateHoursOfMonth(month);
     }
 
     public WorkingTimeCalculator(TimeMap<String, LocalDateTime> timeMap, LocalDateTime dateTime) {
@@ -38,11 +39,27 @@ public final class WorkingTimeCalculator {
         workingTimeDayHours = convertMinutesToHours(workingTimeDayMinutes);
     }
 
-    public String calculateHoursOfMonth() {
+    /**
+     * Calculates the hours of an complete month.
+     *
+     * @return the amount of hours as an string.
+     */
+    private  String calculateHoursOfMonth(Month month) {
+        TimeKey worktimeStart = TimeKey.WORKTIME_START;
         int minutes = 0;
+        log.error(String.valueOf(TimeUtils.getCountOfKey(timeMap, worktimeStart, month)));
 
-        for (Map.Entry<String, LocalDateTime> entry : timeMap.entrySet()) {
-            minutes += calculateWorkingTimeInMinutes(entry.getValue());
+        for (int i = 1; i < TimeUtils.getCountOfKey(timeMap, worktimeStart, month); i++) {
+            minutes += calculateWorkingTimeInMinutes(
+                    timeMap.get(
+                            worktimeStart.generateKey(LocalDateTime.of(
+                                    LocalDate.now().getYear(),
+                                    Month.of(i), LocalDate.now().getDayOfMonth(),
+                                    LocalTime.now().getHour(),
+                                    LocalTime.now().getMinute(),
+                                    LocalTime.now().getSecond(),
+                                    LocalTime.now().getNano()))
+                    ));
         }
         return convertMinutesToHours(minutes);
     }
