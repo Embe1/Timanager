@@ -1,4 +1,4 @@
-package de.timanager.files;
+package de.timanager.time;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

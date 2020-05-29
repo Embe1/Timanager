@@ -1,10 +1,15 @@
 package de.timanager.files;
 
+import de.timanager.time.TimeKey;
+import de.timanager.time.TimeMap;
+import de.timanager.time.TimeUtils;
 import de.timanager.util.TimeUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -206,6 +211,12 @@ public final class CustomFileHandler {
         return false;
     }
 
+    /**
+     * Serializes the default file-path.
+     * Calls simple the {@link #serializeTime(String)} through a wrapper method.
+     *
+     * @throws IOException
+     */
     public final void serializeForUpdate() throws IOException {
         serializeTime(storingsPath);
     }
@@ -240,9 +251,12 @@ public final class CustomFileHandler {
         }
     }
 
-    public void writeBackup() {
+    /**
+     * Stores all months in separate files.
+     */
+    public final void writeBackup() {
 
-        for (int i = 1; i < LocalDate.MAX.getMonthValue() + 1; i++) {
+        for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()) + 1; i++) {
             try {
                 TimeMap<String, LocalDateTime> localtimeMap = deserializeTime(path + Month.of(i) + year + postfix);
                 saveToBackupFile(localtimeMap, path + "Backup/" + Month.of(i) + year);
@@ -255,7 +269,66 @@ public final class CustomFileHandler {
         }
     }
 
-    private void saveToBackupFile(TimeMap<String, LocalDateTime> map, String pathWithoutPostfix) throws IOException {
+    /**
+     *
+     */
+    public final void readBackup() {
+
+        for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()); i++) {
+
+            try {
+                String content = Files.readString(Paths.get(path + "Backup/" + Month.of(i) + year + ".bck"));
+                readFromBackupFile(content, path + "Backup/" + Month.of(i) + year);
+                log.info(String.format("%s successfully read from backup-file!", Month.of(i)));
+
+            } catch (IOException e) {
+                log.warn(String.format("%s backup-file couldn't be read.", Month.of(i)));
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     *
+     *
+     * @param fileContent
+     * @param pathWithoutPostfix
+     */
+    private void readFromBackupFile(String fileContent, String pathWithoutPostfix) {
+        StringBuilder stringBuilder = new StringBuilder();
+        HashMap<String, LocalDateTime> tmpMap = new HashMap<>();
+
+        for (int i = 0; i < fileContent.length(); i++) {
+
+            if (fileContent.charAt(i) == ',') {
+                LocalDateTime parsedLDT = LocalDateTime.parse(stringBuilder.toString());
+                String nextKey = TimeKey.WORKTIME_START.generateKey(parsedLDT);
+                tmpMap.put(nextKey, parsedLDT);
+                stringBuilder.replace(0, stringBuilder.length(), "");
+
+            } else if (String.valueOf(fileContent.charAt(i)).equals(System.lineSeparator())) {
+                LocalDateTime parsedLDT = LocalDateTime.parse(stringBuilder.toString());
+                String nextKey = TimeKey.WORKTIME_START.generateKey(parsedLDT);
+                tmpMap.put(nextKey, parsedLDT);
+                stringBuilder.replace(0, stringBuilder.length(), "");
+
+            } else {
+                stringBuilder.append(fileContent.charAt(i));
+            }
+        }
+
+        // TODO Save the new timeMap with the customFileHandler.
+    }
+
+    /**
+     * Stores the given map in the permitted 'pathWithoutPostfix' .bck file.
+     *
+     * @param map                the values to save.
+     * @param pathWithoutPostfix the path and filename, to store in.
+     * @throws IOException
+     */
+    private void saveToBackupFile(TimeMap<String, LocalDateTime> map, String pathWithoutPostfix) throws
+            IOException {
         createFileWithMonthIfNotExist(pathWithoutPostfix + ".bck");
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathWithoutPostfix + ".bck"))) {
@@ -264,6 +337,7 @@ public final class CustomFileHandler {
                 bufferedWriter.append(entry.getKey());
                 bufferedWriter.append(",");
                 bufferedWriter.append(entry.getValue().toString());
+//                bufferedWriter.append(";");
                 bufferedWriter.append(System.lineSeparator());
             }
         }

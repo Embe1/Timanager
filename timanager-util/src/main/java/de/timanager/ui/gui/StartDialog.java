@@ -1,7 +1,7 @@
 package de.timanager.ui.gui;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
+import de.timanager.time.TimeKey;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

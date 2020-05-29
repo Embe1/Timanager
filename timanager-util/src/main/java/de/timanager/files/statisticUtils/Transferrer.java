@@ -1,8 +1,9 @@
 package de.timanager.files.statisticUtils;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
-import de.timanager.files.TimeMap;
+import de.timanager.time.TimeKey;
+import de.timanager.time.TimeMap;
+import de.timanager.time.TimeUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,7 @@ public final class Transferrer {
 
                 for (int i = 0; i < localTimeMap.countDateEntries(); i++) {
 
-                    for (int j = 1; j < LocalDateTime.MAX.getDayOfMonth(); j++) {
+                    for (int j = 1; j < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()); j++) {
                         LocalDateTime dateTime = LocalDateTime.of(
                                 LocalDate.now().getYear(),
                                 LocalDate.now().getMonth(),

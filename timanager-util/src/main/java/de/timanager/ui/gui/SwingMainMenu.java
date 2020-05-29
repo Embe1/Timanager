@@ -1,7 +1,7 @@
 package de.timanager.ui.gui;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
+import de.timanager.time.TimeKey;
 import de.timanager.ui.gui.popups.PopupSaveTime;
 import de.timanager.ui.gui.popups.PopupSaveTimeForDate;
 import de.timanager.ui.gui.statistics.MonthOverview;
@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -136,6 +135,7 @@ public final class SwingMainMenu extends GuiFrame {
 
         JMenu menu1 = new JMenu("Statistiken");
         JMenu menu2 = new JMenu("Datenmanipulation");
+        JMenu menu3 = new JMenu("Administration");
 
         JMenuItem menu1Item1 = new JMenuItem("Wochenansicht");
         menu1Item1.addMouseListener(new MouseAdapter() {
@@ -169,13 +169,23 @@ public final class SwingMainMenu extends GuiFrame {
             }
         });
 
+        JMenuItem menu3Item1 = new JMenuItem("Backup laden");
+        menu3Item1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                customFileHandler.readBackup();
+            }
+        });
+
         menu1.add(menu1Item1);
         menu1.add(menu1Item2);
         menu1.add(menu1Item3);
         menu2.add(menu2Item1);
+        menu3.add(menu3Item1);
 
         menuBar.add(menu1);
         menuBar.add(menu2);
+        menuBar.add(menu3);
 
         super.setJMenuBar(menuBar);
     }

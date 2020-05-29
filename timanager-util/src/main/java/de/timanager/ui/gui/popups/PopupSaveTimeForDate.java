@@ -1,7 +1,7 @@
 package de.timanager.ui.gui.popups;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeKey;
+import de.timanager.time.TimeKey;
 import de.timanager.ui.gui.SwingMainMenu;
 
 import javax.swing.*;

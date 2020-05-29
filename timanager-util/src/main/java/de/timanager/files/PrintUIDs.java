@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
+/**
+ * Helper class, to print out the serialVersionUID of this class and all superclasses.
+ */
 public class PrintUIDs extends ObjectInputStream {
 
     public PrintUIDs(InputStream in) throws IOException {

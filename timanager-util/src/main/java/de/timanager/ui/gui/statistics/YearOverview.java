@@ -1,7 +1,7 @@
 package de.timanager.ui.gui.statistics;
 
 import de.timanager.files.CustomFileHandler;
-import de.timanager.files.TimeMap;
+import de.timanager.time.TimeMap;
 import de.timanager.statistics.WorkingTimeCalculator;
 import de.timanager.ui.gui.GuiFrame;
 
@@ -41,7 +41,7 @@ public final class YearOverview extends BaseTableView {
 
             tableModel.addRow(new Object[]{
                     DateTimeFormatter.ofPattern("MMMM", Locale.GERMANY).format(Month.of(j)),
-                    new WorkingTimeCalculator(timeMap).calculateHoursOfMonth(),
+                    new WorkingTimeCalculator(timeMap, Month.of(j)),
                     Boolean.FALSE
             });
         }

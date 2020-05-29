@@ -1,4 +1,4 @@
-package de.timanager.files;
+package de.timanager.time;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ public final class TimeMap<K extends String, V extends LocalDateTime> extends Ha
         for (int i = 0; i < size(); i++) {
             boolean lineCounted = false;
 
-            for (int j = 1; j < LocalDateTime.MAX.getDayOfMonth(); j++) {
+            for (int j = 1; j < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()); j++) {
 
                 LocalDateTime dateTime = LocalDateTime.of(
                         LocalDate.now().getYear(),
