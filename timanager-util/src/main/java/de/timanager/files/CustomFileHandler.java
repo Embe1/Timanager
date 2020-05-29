@@ -3,6 +3,7 @@ package de.timanager.files;
 import de.timanager.time.TimeKey;
 import de.timanager.time.TimeMap;
 import de.timanager.time.TimeUtils;
+import de.timanager.ui.gui.SwingMainMenu;
 import de.timanager.util.TimeUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -252,25 +253,27 @@ public final class CustomFileHandler {
     }
 
     /**
-     * Stores all months in separate files.
+     * Stores all months in separate files, if the backup storing is enabled.
      */
     public final void writeBackup() {
 
-        for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()) + 1; i++) {
-            try {
-                TimeMap<String, LocalDateTime> localtimeMap = deserializeTime(path + Month.of(i) + year + postfix);
-                saveToBackupFile(localtimeMap, path + "Backup/" + Month.of(i) + year);
-                log.info(String.format("%s stored successfully to backup-file!", Month.of(i)));
+        if (SwingMainMenu.isBackupEnabled()) {
 
-            } catch (IOException | ClassNotFoundException e) {
-                log.warn(String.format("%s backup-file couldn't be stored.", Month.of(i)));
-                e.printStackTrace();
+            for (int i = 1; i < TimeUtils.getDayCountOfSpecificMonth(LocalDate.now()) + 1; i++) {
+                try {
+                    TimeMap<String, LocalDateTime> localtimeMap = deserializeTime(path + Month.of(i) + year + postfix);
+                    saveToBackupFile(localtimeMap, path + "Backup/" + Month.of(i) + year);
+                    log.info(String.format("%s stored successfully to backup-file!", Month.of(i)));
+
+                } catch (IOException | ClassNotFoundException e) {
+                    log.warn(String.format("%s backup-file couldn't be stored - Exception: %s", Month.of(i), e.getLocalizedMessage()));
+                }
             }
         }
     }
 
     /**
-     *
+     * Reads the backup files and overwrites the month files with the backup data.
      */
     public final void readBackup() {
 

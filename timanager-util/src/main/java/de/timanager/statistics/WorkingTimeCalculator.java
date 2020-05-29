@@ -47,7 +47,6 @@ public final class WorkingTimeCalculator {
     private  String calculateHoursOfMonth(Month month) {
         TimeKey worktimeStart = TimeKey.WORKTIME_START;
         int minutes = 0;
-        log.error(String.valueOf(TimeUtils.getCountOfKey(timeMap, worktimeStart, month)));
 
         for (int i = 1; i < TimeUtils.getCountOfKey(timeMap, worktimeStart, month); i++) {
             minutes += calculateWorkingTimeInMinutes(

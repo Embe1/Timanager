@@ -41,7 +41,7 @@ public final class YearOverview extends BaseTableView {
 
             tableModel.addRow(new Object[]{
                     DateTimeFormatter.ofPattern("MMMM", Locale.GERMANY).format(Month.of(j)),
-                    new WorkingTimeCalculator(timeMap, Month.of(j)),
+                    new WorkingTimeCalculator(timeMap, Month.of(j)).getWorkingTimeMonthHours(),
                     Boolean.FALSE
             });
         }

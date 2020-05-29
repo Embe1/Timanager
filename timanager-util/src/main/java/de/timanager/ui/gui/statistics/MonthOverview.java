@@ -45,7 +45,6 @@ public final class MonthOverview extends BaseTableView {
 
         createTable();
         addListeners();
-//        tableCheckBox();
 
         pack();
         setLocationRelativeTo(componentOrientation);
