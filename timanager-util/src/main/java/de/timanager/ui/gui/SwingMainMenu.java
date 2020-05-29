@@ -2,6 +2,7 @@ package de.timanager.ui.gui;
 
 import de.timanager.files.CustomFileHandler;
 import de.timanager.time.TimeKey;
+import de.timanager.ui.gui.popups.PopupConfirmation;
 import de.timanager.ui.gui.popups.PopupSaveTime;
 import de.timanager.ui.gui.popups.PopupSaveTimeForDate;
 import de.timanager.ui.gui.statistics.MonthOverview;
@@ -173,7 +174,7 @@ public final class SwingMainMenu extends GuiFrame {
         menu3Item1.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                customFileHandler.readBackup();
+                showConfirmDialogForBackup();
             }
         });
 
@@ -188,6 +189,20 @@ public final class SwingMainMenu extends GuiFrame {
         menuBar.add(menu3);
 
         super.setJMenuBar(menuBar);
+    }
+
+    /**
+     * Shows a confirmation-dialog, for the assurance of the loading of the backup.
+     */
+    private void showConfirmDialogForBackup() {
+        int confirmDialog = JOptionPane.showConfirmDialog(
+                this,
+                "Das Backup überschreibt alle momentanen gespeicherten Monate! Sind Sie sicher, das das Backup geladen werden soll?",
+                "Speicherung",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmDialog == JOptionPane.YES_OPTION)
+            customFileHandler.readBackup();
     }
 
     private void stopClock() {
