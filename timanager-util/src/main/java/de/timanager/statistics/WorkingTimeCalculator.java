@@ -3,7 +3,6 @@ package de.timanager.statistics;
 import de.timanager.time.TimeKey;
 import de.timanager.time.TimeMap;
 import de.timanager.time.TimeUtils;
-import de.timanager.util.TimeUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * Does calculations for different time informations.
@@ -45,20 +45,12 @@ public final class WorkingTimeCalculator {
      * @return the amount of hours as an string.
      */
     private  String calculateHoursOfMonth(Month month) {
+        List<LocalDateTime> listOfCompleteDayRecords = TimeUtils.getListOfCompleteDayRecords(timeMap, month);
         TimeKey worktimeStart = TimeKey.WORKTIME_START;
         int minutes = 0;
 
-        for (int i = 1; i < TimeUtils.getCountOfKey(timeMap, worktimeStart, month); i++) {
-            minutes += calculateWorkingTimeInMinutes(
-                    timeMap.get(
-                            worktimeStart.generateKey(LocalDateTime.of(
-                                    LocalDate.now().getYear(),
-                                    Month.of(i), LocalDate.now().getDayOfMonth(),
-                                    LocalTime.now().getHour(),
-                                    LocalTime.now().getMinute(),
-                                    LocalTime.now().getSecond(),
-                                    LocalTime.now().getNano()))
-                    ));
+        for (LocalDateTime dateTime : listOfCompleteDayRecords) {
+            minutes += calculateWorkingTimeInMinutes(timeMap.get(worktimeStart.generateKey(dateTime)));
         }
         return convertMinutesToHours(minutes);
     }
