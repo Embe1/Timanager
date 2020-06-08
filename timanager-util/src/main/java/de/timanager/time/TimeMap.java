@@ -3,9 +3,7 @@ package de.timanager.time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -16,6 +14,7 @@ import java.util.Objects;
  * @param <V> value of the time.
  */
 public final class TimeMap<K extends String, V extends LocalDateTime> extends HashMap<K, V> {
+
 
     /**
      * For serialization.
@@ -34,11 +33,6 @@ public final class TimeMap<K extends String, V extends LocalDateTime> extends Ha
         }
         return null;
     }
-
-//    @Override
-//    public V get(Object key) {
-//        return super.get(key) != null ? super.get(key) : (V) LocalDateTime.now();
-//    }
 
     /**
      * Gets the values of the {@link TimeKey} and the depending partner given.
